@@ -1,0 +1,249 @@
+---
+title: "Derive information with dplyr"
+author:
+  - [TEAM NAME GOES HERE]
+output: 
+  html_document:
+    df_print: paged
+    highlight: textmate 
+    theme: readable
+    code_folding: hide
+    toc: true
+    toc_float: true
+    fig_width: 9
+    fig_height: 6
+---
+
+# Overview
+
+NHANES (The National Health and Nutrition Examination Survey) was designed to assess the health and nutritional status of the US population and is conducted by the National Center for Health Statistics of the Centers for Disease Control and Prevention. Since 1999-2000, NHANES has been conducted in two-year cycles. For each cycle, potential participants are identified through stratified, multistage probability sampling of the non-institutionalized US population. In this set of exercises, we will use the ten cycles conducted from 1999-2000 through 2017-2018. 
+
+## Import
+
+```{r, message=FALSE, warning=FALSE}
+
+# set gloabal rmarkdown options
+# echo = TRUE     --> show code blocks in markdown doc
+# message = FALSE --> suppress package startup and other messages
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+
+# Load packages 
+library(tidyverse)  # includes dplyr - filter / select
+library(knitr)      # for kable
+library(kableExtra) # for kable_styling and other utilities
+library(tblStrings) # for table strings
+
+nhanes <- read_rds('data/NHANES_analysis_post_exclusions.rds')
+
+# trying to print all rows will make df_print: paged cause a pandoc error.
+# don't modify the line below! It may break knitr.
+nhanes[1:10, ]
+  
+```
+
+
+## Data dictionary
+
+Review this briefly and use it as a reference to engage with the exercises below.
+
+```{r}
+
+# A data dictionary is more comprehensive than these two columns,
+# but these two columns are the core components of a data dictionary.
+# I highly recommend you only engage with data when there is a 
+# data dictionary available. If a collaborator cannot share one of
+# these with you when they ask you to analyze your data, then they 
+# should not be your collaborator.
+
+nhanes_descr <- c(
+  "seqn"              = "SP identifier",
+  "exam"              = "NHANES exam year",
+  "psu"               = "primary sampling unit",
+  "strata"            = "survey strata",
+  "wts_mec_2yr"       = "survey weights",
+  "age"               = "SP age, years",
+  "age_group"         = "SP age group, years",
+  "sex"               = "SP sex",
+  "race_ethnicity"    = "SP race and/or ethnicity",
+  "education"         = "SP education",
+  "income_hh"         = "SP household income",
+  "bp_sys_mmhg"       = "SP systolic blood pressure, mm Hg",
+  "bp_dia_mmhg"       = "SP diastolic blood pressure, mm Hg",
+  "bp_controlled"     = "Did SP have controlled BP? (<140/90 mm Hg)",
+  "acr_mgg"           = "SP albumin-to-creatinine ratio, mg/g",
+  "albuminuria"       = "Did SP have albuminuria? (ACR > 30 mg/g)",
+  "chol_hdl_mgdl"     = "SP HDL-cholesterol, mg/dl",
+  "chol_total_mgdl"   = "SP total cholesterol, mg/dl",
+  "health_insurance"  = "SP health insurance status",
+  "bp_high_aware"     = "SP ever told by Dr: 'you have high blood pressure'?",
+  "bp_meds"           = "SP currently using antihypertensive medication?",
+  "hc_usual_facility" = "SP has a usual healthcare facility?",
+  "hc_visit_1yr"      = "SP visited their healthcare facility last year?"
+)
+
+# abbreviations need to be placed in the footnote of the table
+abbrevs <- c("SP = survey participant", 
+  "BP = blood pressure", 
+  "HDL = high density lipoprotein")
+
+# the enframe function transforms a vector into a tibble,
+enframe(nhanes_descr) %>% 
+  kable(col.names = c('Variable', 'Description')) %>% 
+  kable_styling(bootstrap_options = c('striped', 'hover')) %>% 
+  footnote(general = paste(abbrevs, collapse = '; '))
+
+# the paste() function is used here. To give a brief summary,
+# paste() combines string vectors. In this case, we are using 
+# paste to collapse a vector and separate each component by '; '
+
+```
+
+# Pre-requisites
+
+Before starting these exercises, you should have a good understanding of 
+
+1. The [Derive Information with dplyr](https://rstudio.cloud/learn/primers/2.3) Primer.
+
+1. Chapter 5 of [R for Data Science](https://r4ds.had.co.nz/transform.html)
+
+# Exercise 1
+
+Group the `nhanes` data by exam and sex, then apply the `summary()` function to compute the mean systolic blood pressure and standard error for the mean systolic blood pressure at each exam year, for men and women, separately. 
+
+Notes: 
+
+- the standard error of a vector $x$ with $n$ observations is $$\frac{\text{standard deviation of x}}{\sqrt{n}}$$
+
+- the mean systolic blood pressure should be named `sbp_mn`
+
+- the mean systolic blood pressure should be named `sbp_se`
+
+```{r}
+
+# your code goes here
+
+# Hints: 
+# 
+# there is a function in dplyr called n()
+# that counts the number of rows in each group.
+# for example, try running:
+# 
+# nhanes %>% 
+#   group_by(exam) %>% 
+#   summarise(n = n())
+# 
+# how could you use this to compute standard error?
+
+```
+
+Your solution should look like this:
+
+```{r}
+
+read_rds('solutions/01_solution.rds')
+
+```
+
+# Exercise 2
+
+Using the summary data you created in problem 1, create a figure to explore trends in mean systolic blood pressure. 
+
+- Talk with your teammates about the trends you see in the figure. What do you think drove the trends you see?
+
+- Be careful! The results we are looking at are not adjusted using the NHANES weights. Therefore, results are not nationally representative.
+
+Notes: 
+
+- `geom_line` expects a grouping aeshetic, specified with `aes(group = <grouping variable>)`.
+
+- If you'd like a challenge, add standard error bars. (optional)
+
+```{r}
+
+# Your code goes here
+
+```
+
+Your solution should look like this:
+
+```{r}
+
+read_rds('solutions/02_solution.rds')
+
+```
+
+# Exercise 3
+
+I have made a package called `tblStrings` that helps you create presentation-ready strings using data. The package has a vector type called point-error, which formats a point and a margin of error in a way that matches what many journal articles expect. Here is how the function works:
+
+```{r}
+
+pointErr(point = 12.154, error = 1.512)
+
+```
+
+You can also change the format of the output:
+
+```{r}
+
+# style can be 'pm' (plus/minus) or 'brac' (in brackets)
+pointErr(point = 12.154, error = 1.512, style = 'brac')
+
+```
+
+Apply `mutate` to add a column of point-error values to the summary data you created in exercise 1. Use the mean as a point estimate and the standard error as an error estimate. 
+
+```{r}
+
+# your code goes here
+
+```
+
+The new dataset should look like this:
+
+```{r}
+
+read_rds('solutions/03_solution.rds')
+
+```
+
+# Exercise 4
+
+`dplyr` has a function called `pull` that works a lot like `[[` and `$`. For example:
+
+```{r}
+
+tmp <- nhanes[1:5, 1:5]
+
+tmp$seqn
+
+tmp[['seqn']]
+
+tmp %>% 
+  pull(seqn)
+
+```
+
+You can use any of `[[`, `$`, or `pull` to work this next problem. 
+
+Isolate the point-error values for males and females in 2009, naming them `sbp_2009_males` and `sbp_2009_females`, respectively. Do the same for 2017, updating your names accordingly. Summarize your findings in 1-2 sentences using Rmarkdown's in-line reporting option (complete my interpretation below - edit the words if you want to).
+
+```{r}
+
+solution_4 <- read_rds('solutions/04_solution.rds')
+
+```
+
+
+In 2009, the mean $\pm$ standard error of systolic blood pressure for males and females was `r solution_4$sbp_2009_males` and `r solution_4$sbp_2009_females`, respectively. However, in 2017, the mean $\pm$ standard error systolic blood pressure had risen to ___ for males and ___ for females
+
+
+
+
+
+
+
+
+
+
+
