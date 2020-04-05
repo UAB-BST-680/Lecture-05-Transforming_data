@@ -2622,15 +2622,6 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
-<script>$(document).ready(function(){
-    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-    if ($('[data-toggle="popover"]').popover === 'function') {
-        $('[data-toggle="popover"]').popover();
-    }
-});
-</script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -2887,9 +2878,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 
 # Load packages 
 library(tidyverse)  # includes dplyr - filter / select
-library(knitr)      # for kable
-library(kableExtra) # for kable_styling and other utilities
-library(tblStrings) # for table strings
+library(gt)         # for tables
 
 nhanes &lt;- read_rds(&#39;data/NHANES_analysis_post_exclusions.rds&#39;)
 
@@ -2945,222 +2934,462 @@ abbrevs &lt;- c(&quot;SP = survey participant&quot;,
 
 # the enframe function transforms a vector into a tibble,
 enframe(nhanes_descr) %&gt;% 
-  kable(col.names = c(&#39;Variable&#39;, &#39;Description&#39;)) %&gt;% 
-  kable_styling(bootstrap_options = c(&#39;striped&#39;, &#39;hover&#39;)) %&gt;% 
-  footnote(general = paste(abbrevs, collapse = &#39;; &#39;))</code></pre>
-<table class="table table-striped table-hover" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-Variable
-</th>
-<th style="text-align:left;">
-Description
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-seqn
-</td>
-<td style="text-align:left;">
-SP identifier
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-exam
-</td>
-<td style="text-align:left;">
-NHANES exam year
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-psu
-</td>
-<td style="text-align:left;">
-primary sampling unit
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-strata
-</td>
-<td style="text-align:left;">
-survey strata
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-wts_mec_2yr
-</td>
-<td style="text-align:left;">
-survey weights
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-age
-</td>
-<td style="text-align:left;">
-SP age, years
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-age_group
-</td>
-<td style="text-align:left;">
-SP age group, years
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sex
-</td>
-<td style="text-align:left;">
-SP sex
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-race_ethnicity
-</td>
-<td style="text-align:left;">
-SP race and/or ethnicity
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-education
-</td>
-<td style="text-align:left;">
-SP education
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-income_hh
-</td>
-<td style="text-align:left;">
-SP household income
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-bp_sys_mmhg
-</td>
-<td style="text-align:left;">
-SP systolic blood pressure, mm Hg
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-bp_dia_mmhg
-</td>
-<td style="text-align:left;">
-SP diastolic blood pressure, mm Hg
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-bp_controlled
-</td>
-<td style="text-align:left;">
-Did SP have controlled BP? (&lt;140/90 mm Hg)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-acr_mgg
-</td>
-<td style="text-align:left;">
-SP albumin-to-creatinine ratio, mg/g
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-albuminuria
-</td>
-<td style="text-align:left;">
-Did SP have albuminuria? (ACR &gt; 30 mg/g)
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-chol_hdl_mgdl
-</td>
-<td style="text-align:left;">
-SP HDL-cholesterol, mg/dl
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-chol_total_mgdl
-</td>
-<td style="text-align:left;">
-SP total cholesterol, mg/dl
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-health_insurance
-</td>
-<td style="text-align:left;">
-SP health insurance status
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-bp_high_aware
-</td>
-<td style="text-align:left;">
-SP ever told by Dr: ‘you have high blood pressure’?
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-bp_meds
-</td>
-<td style="text-align:left;">
-SP currently using antihypertensive medication?
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hc_usual_facility
-</td>
-<td style="text-align:left;">
-SP has a usual healthcare facility?
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hc_visit_1yr
-</td>
-<td style="text-align:left;">
-SP visited their healthcare facility last year?
-</td>
-</tr>
-</tbody>
-<tfoot>
-<tr>
-<td style="padding: 0; border: 0;" colspan="100%">
-<span style="font-style: italic;">Note: </span>
-</td>
-</tr>
-<tr>
-<td style="padding: 0; border: 0;" colspan="100%">
-<sup></sup> SP = survey participant; BP = blood pressure; HDL = high density lipoprotein
-</td>
-</tr>
-</tfoot>
-</table>
-<pre class="r"><code># the paste() function is used here. To give a brief summary,
-# paste() combines string vectors. In this case, we are using 
-# paste to collapse a vector and separate each component by &#39;; &#39;</code></pre>
+  gt(rowname_col = &quot;name&quot;) %&gt;%
+  tab_stubhead(label = &#39;Variable name&#39;) %&gt;% 
+  cols_label(value = &#39;Variable description&#39;) %&gt;% 
+  cols_align(&#39;right&#39;) %&gt;% 
+  tab_source_note(source_note = &#39;SP = survey participant; NHANES = National Health and Nutrition Examination Survey&#39;) %&gt;% 
+  tab_header(title = &#39;Description of NHANES data&#39;)</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#aptxazmoqp .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#aptxazmoqp .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#aptxazmoqp .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#aptxazmoqp .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#aptxazmoqp .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#aptxazmoqp .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#aptxazmoqp .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#aptxazmoqp .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#aptxazmoqp .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#aptxazmoqp .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#aptxazmoqp .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#aptxazmoqp .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#aptxazmoqp .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#aptxazmoqp .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#aptxazmoqp .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aptxazmoqp .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aptxazmoqp .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#aptxazmoqp .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aptxazmoqp .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#aptxazmoqp .gt_left {
+  text-align: left;
+}
+
+#aptxazmoqp .gt_center {
+  text-align: center;
+}
+
+#aptxazmoqp .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#aptxazmoqp .gt_font_normal {
+  font-weight: normal;
+}
+
+#aptxazmoqp .gt_font_bold {
+  font-weight: bold;
+}
+
+#aptxazmoqp .gt_font_italic {
+  font-style: italic;
+}
+
+#aptxazmoqp .gt_super {
+  font-size: 65%;
+}
+
+#aptxazmoqp .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="aptxazmoqp" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <th colspan="2" class="gt_heading gt_title gt_font_normal" style>Description of NHANES data</th>
+    </tr>
+    <tr>
+      <th colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">Variable name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">Variable description</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left gt_stub">seqn</td>
+      <td class="gt_row gt_right">SP identifier</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">exam</td>
+      <td class="gt_row gt_right">NHANES exam year</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">psu</td>
+      <td class="gt_row gt_right">primary sampling unit</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">strata</td>
+      <td class="gt_row gt_right">survey strata</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">wts_mec_2yr</td>
+      <td class="gt_row gt_right">survey weights</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">age</td>
+      <td class="gt_row gt_right">SP age, years</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">age_group</td>
+      <td class="gt_row gt_right">SP age group, years</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">sex</td>
+      <td class="gt_row gt_right">SP sex</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">race_ethnicity</td>
+      <td class="gt_row gt_right">SP race and/or ethnicity</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">education</td>
+      <td class="gt_row gt_right">SP education</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">income_hh</td>
+      <td class="gt_row gt_right">SP household income</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">bp_sys_mmhg</td>
+      <td class="gt_row gt_right">SP systolic blood pressure, mm Hg</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">bp_dia_mmhg</td>
+      <td class="gt_row gt_right">SP diastolic blood pressure, mm Hg</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">bp_controlled</td>
+      <td class="gt_row gt_right">Did SP have controlled BP? (&lt;140/90 mm Hg)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">acr_mgg</td>
+      <td class="gt_row gt_right">SP albumin-to-creatinine ratio, mg/g</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">albuminuria</td>
+      <td class="gt_row gt_right">Did SP have albuminuria? (ACR &gt; 30 mg/g)</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">chol_hdl_mgdl</td>
+      <td class="gt_row gt_right">SP HDL-cholesterol, mg/dl</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">chol_total_mgdl</td>
+      <td class="gt_row gt_right">SP total cholesterol, mg/dl</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">health_insurance</td>
+      <td class="gt_row gt_right">SP health insurance status</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">bp_high_aware</td>
+      <td class="gt_row gt_right">SP ever told by Dr: 'you have high blood pressure'?</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">bp_meds</td>
+      <td class="gt_row gt_right">SP currently using antihypertensive medication?</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">hc_usual_facility</td>
+      <td class="gt_row gt_right">SP has a usual healthcare facility?</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">hc_visit_1yr</td>
+      <td class="gt_row gt_right">SP visited their healthcare facility last year?</td>
+    </tr>
+  </tbody>
+  <tfoot class="gt_sourcenotes">
+    <tr>
+      <td class="gt_sourcenote" colspan="2">SP = survey participant; NHANES = National Health and Nutrition Examination Survey</td>
+    </tr>
+  </tfoot>
+  
+</table></div>
 </div>
 </div>
 <div id="pre-requisites" class="section level1">
@@ -3220,41 +3449,1038 @@ SP visited their healthcare facility last year?
 </div>
 <div id="exercise-3" class="section level1">
 <h1>Exercise 3</h1>
-<p>I have made a package called <code>tblStrings</code> that helps you create presentation-ready strings using data. The package has a vector type called point-error, which formats a point and a margin of error in a way that matches what many journal articles expect. Here is how the function works:</p>
-<pre class="r"><code>pointErr(point = 12.154, error = 1.512)</code></pre>
-<pre><code>## &lt;tblStrings_pointErr[1]&gt;
-## 12.2 ± 1.51</code></pre>
-<p>You can also change the format of the output:</p>
-<pre class="r"><code># style can be &#39;pm&#39; (plus/minus) or &#39;brac&#39; (in brackets)
-pointErr(point = 12.154, error = 1.512, style = &#39;brac&#39;)</code></pre>
-<pre><code>## &lt;tblStrings_pointErr[1]&gt;
-## 12.2 (1.51)</code></pre>
-<p>Apply <code>mutate</code> to add a column of point-error values to the summary data you created in exercise 1. Use the mean as a point estimate and the standard error as an error estimate.</p>
-<pre class="r"><code># your code goes here</code></pre>
-<p>The new dataset should look like this:</p>
+<p>Using the <code>nhanes</code> data, compute race-by-sex specific estimates of the prevalence of hypertension in each exam year.</p>
+<p>Note:</p>
+<ul>
+<li><p>hypertension is defined as having systolic blood pressure &gt; 140 mm Hg, diastolic blood pressure &gt; 90 mm Hg, or currently using antihypertensive medications.</p></li>
+<li><p>You will want to group by three variables.</p></li>
+</ul>
+<pre class="r"><code># Your code goes here</code></pre>
+<p>Your solution should look like this:</p>
 <pre class="r"><code>read_rds(&#39;solutions/03_solution.rds&#39;)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["exam"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["sex"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["sbp_mn"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["sbp_se"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["point_err"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"1999","2":"Female","3":"126.5719","4":"0.5043317","5":"127 ± 0.50"},{"1":"1999","2":"Male","3":"127.5188","4":"0.3953325","5":"128 ± 0.40"},{"1":"2001","2":"Female","3":"125.5893","4":"0.4851646","5":"126 ± 0.49"},{"1":"2001","2":"Male","3":"125.6365","4":"0.3614999","5":"126 ± 0.36"},{"1":"2003","2":"Female","3":"125.3124","4":"0.4998377","5":"125 ± 0.50"},{"1":"2003","2":"Male","3":"125.5488","4":"0.3674838","5":"126 ± 0.37"},{"1":"2005","2":"Female","3":"122.5254","4":"0.4459068","5":"123 ± 0.45"},{"1":"2005","2":"Male","3":"125.0883","4":"0.3427934","5":"125 ± 0.34"},{"1":"2007","2":"Female","3":"122.8302","4":"0.3860086","5":"123 ± 0.39"},{"1":"2007","2":"Male","3":"125.4063","4":"0.3203536","5":"125 ± 0.32"},{"1":"2009","2":"Female","3":"120.5165","4":"0.3566276","5":"121 ± 0.36"},{"1":"2009","2":"Male","3":"124.4130","4":"0.3134664","5":"124 ± 0.31"},{"1":"2011","2":"Female","3":"121.4004","4":"0.3817638","5":"121 ± 0.38"},{"1":"2011","2":"Male","3":"124.8543","4":"0.3260977","5":"125 ± 0.33"},{"1":"2013","2":"Female","3":"121.1512","4":"0.3506037","5":"121 ± 0.35"},{"1":"2013","2":"Male","3":"124.5745","4":"0.3167180","5":"125 ± 0.32"},{"1":"2015","2":"Female","3":"123.4879","4":"0.3576133","5":"123 ± 0.36"},{"1":"2015","2":"Male","3":"126.6797","4":"0.3337568","5":"127 ± 0.33"},{"1":"2017","2":"Female","3":"125.5507","4":"0.4186453","5":"126 ± 0.42"},{"1":"2017","2":"Male","3":"127.3760","4":"0.3648895","5":"127 ± 0.36"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["exam"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["sex"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["race_ethnicity"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["htn"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"1999","2":"Female","3":"Non-Hispanic White","4":"0.3800000"},{"1":"1999","2":"Female","3":"Non-Hispanic Black","4":"0.4170404"},{"1":"1999","2":"Female","3":"Hispanic","4":"0.2934649"},{"1":"1999","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.2698413"},{"1":"1999","2":"Male","3":"Non-Hispanic White","4":"0.3367243"},{"1":"1999","2":"Male","3":"Non-Hispanic Black","4":"0.3779904"},{"1":"1999","2":"Male","3":"Hispanic","4":"0.2723521"},{"1":"1999","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2531646"},{"1":"2001","2":"Female","3":"Non-Hispanic White","4":"0.3716814"},{"1":"2001","2":"Female","3":"Non-Hispanic Black","4":"0.4194915"},{"1":"2001","2":"Female","3":"Hispanic","4":"0.2417763"},{"1":"2001","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.3000000"},{"1":"2001","2":"Male","3":"Non-Hispanic White","4":"0.3220205"},{"1":"2001","2":"Male","3":"Non-Hispanic Black","4":"0.3781676"},{"1":"2001","2":"Male","3":"Hispanic","4":"0.2057878"},{"1":"2001","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2368421"},{"1":"2003","2":"Female","3":"Non-Hispanic White","4":"0.3691508"},{"1":"2003","2":"Female","3":"Non-Hispanic Black","4":"0.3717172"},{"1":"2003","2":"Female","3":"Hispanic","4":"0.3295238"},{"1":"2003","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.3720930"},{"1":"2003","2":"Male","3":"Non-Hispanic White","4":"0.3587407"},{"1":"2003","2":"Male","3":"Non-Hispanic Black","4":"0.3292683"},{"1":"2003","2":"Male","3":"Hispanic","4":"0.2838828"},{"1":"2003","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2727273"},{"1":"2005","2":"Female","3":"Non-Hispanic White","4":"0.3564079"},{"1":"2005","2":"Female","3":"Non-Hispanic Black","4":"0.3851718"},{"1":"2005","2":"Female","3":"Hispanic","4":"0.1902985"},{"1":"2005","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.2523364"},{"1":"2005","2":"Male","3":"Non-Hispanic White","4":"0.3531915"},{"1":"2005","2":"Male","3":"Non-Hispanic Black","4":"0.3692308"},{"1":"2005","2":"Male","3":"Hispanic","4":"0.1747405"},{"1":"2005","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2857143"},{"1":"2007","2":"Female","3":"Non-Hispanic White","4":"0.3849175"},{"1":"2007","2":"Female","3":"Non-Hispanic Black","4":"0.4774624"},{"1":"2007","2":"Female","3":"Hispanic","4":"0.2920673"},{"1":"2007","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.2843137"},{"1":"2007","2":"Male","3":"Non-Hispanic White","4":"0.3936012"},{"1":"2007","2":"Male","3":"Non-Hispanic Black","4":"0.4063047"},{"1":"2007","2":"Male","3":"Hispanic","4":"0.2664093"},{"1":"2007","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2053571"},{"1":"2009","2":"Female","3":"Non-Hispanic White","4":"0.3451635"},{"1":"2009","2":"Female","3":"Non-Hispanic Black","4":"0.4691589"},{"1":"2009","2":"Female","3":"Hispanic","4":"0.2907240"},{"1":"2009","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.2812500"},{"1":"2009","2":"Male","3":"Non-Hispanic White","4":"0.3690476"},{"1":"2009","2":"Male","3":"Non-Hispanic Black","4":"0.4136029"},{"1":"2009","2":"Male","3":"Hispanic","4":"0.2637890"},{"1":"2009","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.3205128"},{"1":"2011","2":"Female","3":"Non-Hispanic White","4":"0.3619764"},{"1":"2011","2":"Female","3":"Non-Hispanic Black","4":"0.4564315"},{"1":"2011","2":"Female","3":"Non-Hispanic Asian","4":"0.2299169"},{"1":"2011","2":"Female","3":"Hispanic","4":"0.2814259"},{"1":"2011","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.1857143"},{"1":"2011","2":"Male","3":"Non-Hispanic White","4":"0.3459184"},{"1":"2011","2":"Male","3":"Non-Hispanic Black","4":"0.4425287"},{"1":"2011","2":"Male","3":"Non-Hispanic Asian","4":"0.2354571"},{"1":"2011","2":"Male","3":"Hispanic","4":"0.2666667"},{"1":"2011","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2777778"},{"1":"2013","2":"Female","3":"Non-Hispanic White","4":"0.3570261"},{"1":"2013","2":"Female","3":"Non-Hispanic Black","4":"0.4415808"},{"1":"2013","2":"Female","3":"Non-Hispanic Asian","4":"0.2484848"},{"1":"2013","2":"Female","3":"Hispanic","4":"0.2776163"},{"1":"2013","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.2261905"},{"1":"2013","2":"Male","3":"Non-Hispanic White","4":"0.3471861"},{"1":"2013","2":"Male","3":"Non-Hispanic Black","4":"0.4442509"},{"1":"2013","2":"Male","3":"Non-Hispanic Asian","4":"0.2724359"},{"1":"2013","2":"Male","3":"Hispanic","4":"0.2645591"},{"1":"2013","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.2470588"},{"1":"2015","2":"Female","3":"Non-Hispanic White","4":"0.3613349"},{"1":"2015","2":"Female","3":"Non-Hispanic Black","4":"0.4342105"},{"1":"2015","2":"Female","3":"Non-Hispanic Asian","4":"0.2339744"},{"1":"2015","2":"Female","3":"Hispanic","4":"0.3355049"},{"1":"2015","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.3157895"},{"1":"2015","2":"Male","3":"Non-Hispanic White","4":"0.3644347"},{"1":"2015","2":"Male","3":"Non-Hispanic Black","4":"0.4482143"},{"1":"2015","2":"Male","3":"Non-Hispanic Asian","4":"0.2492212"},{"1":"2015","2":"Male","3":"Hispanic","4":"0.3178893"},{"1":"2015","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.3513514"},{"1":"2017","2":"Female","3":"Non-Hispanic White","4":"0.3847019"},{"1":"2017","2":"Female","3":"Non-Hispanic Black","4":"0.5252366"},{"1":"2017","2":"Female","3":"Non-Hispanic Asian","4":"0.3333333"},{"1":"2017","2":"Female","3":"Hispanic","4":"0.3119869"},{"1":"2017","2":"Female","3":"Other Race - Including Multi-Racial","4":"0.3120000"},{"1":"2017","2":"Male","3":"Non-Hispanic White","4":"0.4287293"},{"1":"2017","2":"Male","3":"Non-Hispanic Black","4":"0.5087413"},{"1":"2017","2":"Male","3":"Non-Hispanic Asian","4":"0.3579545"},{"1":"2017","2":"Male","3":"Hispanic","4":"0.3231598"},{"1":"2017","2":"Male","3":"Other Race - Including Multi-Racial","4":"0.3881579"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
 <div id="exercise-4" class="section level1">
 <h1>Exercise 4</h1>
-<p><code>dplyr</code> has a function called <code>pull</code> that works a lot like <code>[[</code> and <code>$</code>. For example:</p>
-<pre class="r"><code>tmp &lt;- nhanes[1:5, 1:5]
+<p>Apply functions from the <code>gt</code> package to reproduce the table below.</p>
+<p>Notes:</p>
+<ul>
+<li><p><code>gt</code> handles grouped datasets by creating a table subsection for each group.</p></li>
+<li><p><code>fmt_percent</code> and <code>fmt_missing</code> are used to control formatting</p></li>
+<li><p><code>summary_rows</code> is used to create the Overall summary for each sex group.</p></li>
+</ul>
+<pre class="r"><code># this will be useful
+exam_years &lt;- c(
+  &quot;1999&quot;,
+  &quot;2001&quot;,
+  &quot;2003&quot;,
+  &quot;2005&quot;,
+  &quot;2007&quot;,
+  &quot;2009&quot;,
+  &quot;2011&quot;,
+  &quot;2013&quot;,
+  &quot;2015&quot;,
+  &quot;2017&quot;
+)
 
-tmp$seqn</code></pre>
-<pre><code>## [1]  2  5  6  7 10</code></pre>
-<pre class="r"><code>tmp[[&#39;seqn&#39;]]</code></pre>
-<pre><code>## [1]  2  5  6  7 10</code></pre>
-<pre class="r"><code>tmp %&gt;% 
-  pull(seqn)</code></pre>
-<pre><code>## [1]  2  5  6  7 10</code></pre>
-<p>You can use any of <code>[[</code>, <code>$</code>, or <code>pull</code> to work this next problem.</p>
-<p>Isolate the point-error values for males and females in 2009, naming them <code>sbp_2009_males</code> and <code>sbp_2009_females</code>, respectively. Do the same for 2017, updating your names accordingly. Summarize your findings in 1-2 sentences using Rmarkdown’s in-line reporting option (complete my interpretation below - edit the words if you want to).</p>
-<pre class="r"><code>solution_4 &lt;- read_rds(&#39;solutions/04_solution.rds&#39;)</code></pre>
-<p>In 2009, the mean <span class="math inline">\(\pm\)</span> standard error of systolic blood pressure for males and females was 124 ± 0.31 and 121 ± 0.36, respectively. However, in 2017, the mean <span class="math inline">\(\pm\)</span> standard error systolic blood pressure had risen to ___ for males and ___ for females</p>
+# Your code goes here</code></pre>
+<p>Your solution should look like this:</p>
+<pre class="r"><code>read_rds(&#39;solutions/04_solution.rds&#39;)</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#iptzewdsgc .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#iptzewdsgc .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#iptzewdsgc .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#iptzewdsgc .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#iptzewdsgc .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#iptzewdsgc .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#iptzewdsgc .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#iptzewdsgc .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#iptzewdsgc .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#iptzewdsgc .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#iptzewdsgc .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#iptzewdsgc .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#iptzewdsgc .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#iptzewdsgc .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#iptzewdsgc .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iptzewdsgc .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iptzewdsgc .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#iptzewdsgc .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iptzewdsgc .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#iptzewdsgc .gt_left {
+  text-align: left;
+}
+
+#iptzewdsgc .gt_center {
+  text-align: center;
+}
+
+#iptzewdsgc .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#iptzewdsgc .gt_font_normal {
+  font-weight: normal;
+}
+
+#iptzewdsgc .gt_font_bold {
+  font-weight: bold;
+}
+
+#iptzewdsgc .gt_font_italic {
+  font-style: italic;
+}
+
+#iptzewdsgc .gt_super {
+  font-size: 65%;
+}
+
+#iptzewdsgc .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="iptzewdsgc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <th colspan="11" class="gt_heading gt_title gt_font_normal" style>Trends in the prevalence of hypertension</th>
+    </tr>
+    <tr>
+      <th colspan="11" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style>Unweighted results from ten NHANES exams</th>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1"></th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="10">
+        <span class="gt_column_spanner">Exam year</span>
+      </th>
+    </tr>
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">1999</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2001</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2003</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2005</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2007</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2009</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2011</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2013</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2015</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2017</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr class="gt_group_heading_row">
+      <td colspan="11" class="gt_group_heading">Female</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic White</td>
+      <td class="gt_row gt_right">38.0&percnt;</td>
+      <td class="gt_row gt_right">37.2&percnt;</td>
+      <td class="gt_row gt_right">36.9&percnt;</td>
+      <td class="gt_row gt_right">35.6&percnt;</td>
+      <td class="gt_row gt_right">38.5&percnt;</td>
+      <td class="gt_row gt_right">34.5&percnt;</td>
+      <td class="gt_row gt_right">36.2&percnt;</td>
+      <td class="gt_row gt_right">35.7&percnt;</td>
+      <td class="gt_row gt_right">36.1&percnt;</td>
+      <td class="gt_row gt_right">38.5&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Black</td>
+      <td class="gt_row gt_right">41.7&percnt;</td>
+      <td class="gt_row gt_right">41.9&percnt;</td>
+      <td class="gt_row gt_right">37.2&percnt;</td>
+      <td class="gt_row gt_right">38.5&percnt;</td>
+      <td class="gt_row gt_right">47.7&percnt;</td>
+      <td class="gt_row gt_right">46.9&percnt;</td>
+      <td class="gt_row gt_right">45.6&percnt;</td>
+      <td class="gt_row gt_right">44.2&percnt;</td>
+      <td class="gt_row gt_right">43.4&percnt;</td>
+      <td class="gt_row gt_right">52.5&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Hispanic</td>
+      <td class="gt_row gt_right">29.3&percnt;</td>
+      <td class="gt_row gt_right">24.2&percnt;</td>
+      <td class="gt_row gt_right">33.0&percnt;</td>
+      <td class="gt_row gt_right">19.0&percnt;</td>
+      <td class="gt_row gt_right">29.2&percnt;</td>
+      <td class="gt_row gt_right">29.1&percnt;</td>
+      <td class="gt_row gt_right">28.1&percnt;</td>
+      <td class="gt_row gt_right">27.8&percnt;</td>
+      <td class="gt_row gt_right">33.6&percnt;</td>
+      <td class="gt_row gt_right">31.2&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Other Race - Including Multi-Racial</td>
+      <td class="gt_row gt_right">27.0&percnt;</td>
+      <td class="gt_row gt_right">30.0&percnt;</td>
+      <td class="gt_row gt_right">37.2&percnt;</td>
+      <td class="gt_row gt_right">25.2&percnt;</td>
+      <td class="gt_row gt_right">28.4&percnt;</td>
+      <td class="gt_row gt_right">28.1&percnt;</td>
+      <td class="gt_row gt_right">18.6&percnt;</td>
+      <td class="gt_row gt_right">22.6&percnt;</td>
+      <td class="gt_row gt_right">31.6&percnt;</td>
+      <td class="gt_row gt_right">31.2&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Asian</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">23.0&percnt;</td>
+      <td class="gt_row gt_right">24.8&percnt;</td>
+      <td class="gt_row gt_right">23.4&percnt;</td>
+      <td class="gt_row gt_right">33.3&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_stub gt_right gt_summary_row gt_first_summary_row">Overall</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">33.94&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">33.10&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">36.02&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">30.75&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">36.65&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">35.11&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">32.63&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">32.99&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">36.23&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">39.25&percnt;</td>
+    </tr>
+    <tr class="gt_group_heading_row">
+      <td colspan="11" class="gt_group_heading">Male</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic White</td>
+      <td class="gt_row gt_right">33.7&percnt;</td>
+      <td class="gt_row gt_right">32.2&percnt;</td>
+      <td class="gt_row gt_right">35.9&percnt;</td>
+      <td class="gt_row gt_right">35.3&percnt;</td>
+      <td class="gt_row gt_right">39.4&percnt;</td>
+      <td class="gt_row gt_right">36.9&percnt;</td>
+      <td class="gt_row gt_right">34.6&percnt;</td>
+      <td class="gt_row gt_right">34.7&percnt;</td>
+      <td class="gt_row gt_right">36.4&percnt;</td>
+      <td class="gt_row gt_right">42.9&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Black</td>
+      <td class="gt_row gt_right">37.8&percnt;</td>
+      <td class="gt_row gt_right">37.8&percnt;</td>
+      <td class="gt_row gt_right">32.9&percnt;</td>
+      <td class="gt_row gt_right">36.9&percnt;</td>
+      <td class="gt_row gt_right">40.6&percnt;</td>
+      <td class="gt_row gt_right">41.4&percnt;</td>
+      <td class="gt_row gt_right">44.3&percnt;</td>
+      <td class="gt_row gt_right">44.4&percnt;</td>
+      <td class="gt_row gt_right">44.8&percnt;</td>
+      <td class="gt_row gt_right">50.9&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Hispanic</td>
+      <td class="gt_row gt_right">27.2&percnt;</td>
+      <td class="gt_row gt_right">20.6&percnt;</td>
+      <td class="gt_row gt_right">28.4&percnt;</td>
+      <td class="gt_row gt_right">17.5&percnt;</td>
+      <td class="gt_row gt_right">26.6&percnt;</td>
+      <td class="gt_row gt_right">26.4&percnt;</td>
+      <td class="gt_row gt_right">26.7&percnt;</td>
+      <td class="gt_row gt_right">26.5&percnt;</td>
+      <td class="gt_row gt_right">31.8&percnt;</td>
+      <td class="gt_row gt_right">32.3&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Other Race - Including Multi-Racial</td>
+      <td class="gt_row gt_right">25.3&percnt;</td>
+      <td class="gt_row gt_right">23.7&percnt;</td>
+      <td class="gt_row gt_right">27.3&percnt;</td>
+      <td class="gt_row gt_right">28.6&percnt;</td>
+      <td class="gt_row gt_right">20.5&percnt;</td>
+      <td class="gt_row gt_right">32.1&percnt;</td>
+      <td class="gt_row gt_right">27.8&percnt;</td>
+      <td class="gt_row gt_right">24.7&percnt;</td>
+      <td class="gt_row gt_right">35.1&percnt;</td>
+      <td class="gt_row gt_right">38.8&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Asian</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">&mdash;</td>
+      <td class="gt_row gt_right">23.5&percnt;</td>
+      <td class="gt_row gt_right">27.2&percnt;</td>
+      <td class="gt_row gt_right">24.9&percnt;</td>
+      <td class="gt_row gt_right">35.8&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_stub gt_right gt_summary_row gt_first_summary_row">Overall</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">30.12&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">27.36&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">29.53&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">27.66&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">29.27&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">33.26&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">29.05&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">29.54&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">32.01&percnt;</td>
+      <td class="gt_row gt_right gt_summary_row gt_first_summary_row">38.23&percnt;</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+</div>
+<div id="exercise-5" class="section level1">
+<h1>Exercise 5</h1>
+<p>Using the dataset you created in exercise 3, compare the prevalence of hypertension between 2013 and 2017 for race-sex groups. Compute the increase (relative and absolute) in prevalence for each group.</p>
+<p>Notes:</p>
+<p>I recommend using <code>group_by</code>, then <code>filter</code>, then <code>summarize</code>, then <code>mutate</code>. Last, arrange the data by <code>sex</code> and (in descending order) the absolute increase in the prevalence of hypertension.</p>
+<pre class="r"><code># Your code goes here</code></pre>
+<p>Your solution should look like this:</p>
+<pre class="r"><code>read_rds(&#39;solutions/05_solution.rds&#39;)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["race_ethnicity"],"name":[2],"type":["fctr"],"align":["left"]},{"label":["htn_2013"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["htn_2017"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["increase_abs"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["increase_prc"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Female","2":"Other Race - Including Multi-Racial","3":"0.2261905","4":"0.3120000","5":"0.08580952","6":"0.37936842"},{"1":"Female","2":"Non-Hispanic Asian","3":"0.2484848","4":"0.3333333","5":"0.08484848","6":"0.34146341"},{"1":"Female","2":"Non-Hispanic Black","3":"0.4415808","4":"0.5252366","5":"0.08365584","6":"0.18944629"},{"1":"Female","2":"Hispanic","3":"0.2776163","4":"0.3119869","5":"0.03437058","6":"0.12380608"},{"1":"Female","2":"Non-Hispanic White","3":"0.3570261","4":"0.3847019","5":"0.02767577","6":"0.07751748"},{"1":"Male","2":"Other Race - Including Multi-Racial","3":"0.2470588","4":"0.3881579","5":"0.14109907","6":"0.57111529"},{"1":"Male","2":"Non-Hispanic Asian","3":"0.2724359","4":"0.3579545","5":"0.08551865","6":"0.31390374"},{"1":"Male","2":"Non-Hispanic White","3":"0.3471861","4":"0.4287293","5":"0.08154313","6":"0.23486863"},{"1":"Male","2":"Non-Hispanic Black","3":"0.4442509","4":"0.5087413","5":"0.06449039","6":"0.14516660"},{"1":"Male","2":"Hispanic","3":"0.2645591","4":"0.3231598","5":"0.05860072","6":"0.22150334"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="exercise-6" class="section level1">
+<h1>Exercise 6</h1>
+<p>Tabulate the data you created in exercise 5, using some of the stylistic features that <code>gt</code> offers.</p>
+<p>Notes:</p>
+<ul>
+<li><p>the function used to create table headers spanning columns is <code>tab_spanner()</code></p></li>
+<li><p>the function used to adjust printed column names if <code>cols_label()</code></p></li>
+<li><p>the function used to color cells is <code>data_color()</code></p></li>
+</ul>
+<pre class="r"><code># Your code goes here</code></pre>
+<p>Your solution should look like this:</p>
+<pre class="r"><code>read_rds(&#39;solutions/06_solution.rds&#39;)</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#wofdlsitmt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#wofdlsitmt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#wofdlsitmt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#wofdlsitmt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#wofdlsitmt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#wofdlsitmt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#wofdlsitmt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#wofdlsitmt .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#wofdlsitmt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#wofdlsitmt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#wofdlsitmt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#wofdlsitmt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#wofdlsitmt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#wofdlsitmt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#wofdlsitmt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wofdlsitmt .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wofdlsitmt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#wofdlsitmt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wofdlsitmt .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#wofdlsitmt .gt_left {
+  text-align: left;
+}
+
+#wofdlsitmt .gt_center {
+  text-align: center;
+}
+
+#wofdlsitmt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#wofdlsitmt .gt_font_normal {
+  font-weight: normal;
+}
+
+#wofdlsitmt .gt_font_bold {
+  font-weight: bold;
+}
+
+#wofdlsitmt .gt_font_italic {
+  font-style: italic;
+}
+
+#wofdlsitmt .gt_super {
+  font-size: 65%;
+}
+
+#wofdlsitmt .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="wofdlsitmt" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1"></th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2">
+        <span class="gt_column_spanner">Prevalence of hypertension</span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2">
+        <span class="gt_column_spanner">Increase in prevalence</span>
+      </th>
+    </tr>
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2013</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">2017</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Relative</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">Absolute</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr class="gt_group_heading_row">
+      <td colspan="5" class="gt_group_heading">Female</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Other Race - Including Multi-Racial</td>
+      <td class="gt_row gt_right">22.6&percnt;</td>
+      <td class="gt_row gt_right">31.2&percnt;</td>
+      <td class="gt_row gt_right">37.9&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFD08E; color: #000000;">8.6&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Asian</td>
+      <td class="gt_row gt_right">24.8&percnt;</td>
+      <td class="gt_row gt_right">33.3&percnt;</td>
+      <td class="gt_row gt_right">34.1&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFD190; color: #000000;">8.5&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Black</td>
+      <td class="gt_row gt_right">44.2&percnt;</td>
+      <td class="gt_row gt_right">52.5&percnt;</td>
+      <td class="gt_row gt_right">18.9&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFD292; color: #000000;">8.4&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Hispanic</td>
+      <td class="gt_row gt_right">27.8&percnt;</td>
+      <td class="gt_row gt_right">31.2&percnt;</td>
+      <td class="gt_row gt_right">12.4&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFF9F2; color: #000000;">3.4&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic White</td>
+      <td class="gt_row gt_right">35.7&percnt;</td>
+      <td class="gt_row gt_right">38.5&percnt;</td>
+      <td class="gt_row gt_right">7.8&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFFFFF; color: #000000;">2.8&percnt;</td>
+    </tr>
+    <tr class="gt_group_heading_row">
+      <td colspan="5" class="gt_group_heading">Male</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Other Race - Including Multi-Racial</td>
+      <td class="gt_row gt_right">24.7&percnt;</td>
+      <td class="gt_row gt_right">38.8&percnt;</td>
+      <td class="gt_row gt_right">57.1&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFA500; color: #000000;">14.1&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Asian</td>
+      <td class="gt_row gt_right">27.2&percnt;</td>
+      <td class="gt_row gt_right">35.8&percnt;</td>
+      <td class="gt_row gt_right">31.4&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFD08E; color: #000000;">8.6&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic White</td>
+      <td class="gt_row gt_right">34.7&percnt;</td>
+      <td class="gt_row gt_right">42.9&percnt;</td>
+      <td class="gt_row gt_right">23.5&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFD396; color: #000000;">8.2&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Non-Hispanic Black</td>
+      <td class="gt_row gt_right">44.4&percnt;</td>
+      <td class="gt_row gt_right">50.9&percnt;</td>
+      <td class="gt_row gt_right">14.5&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFE1B7; color: #000000;">6.4&percnt;</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left gt_stub">Hispanic</td>
+      <td class="gt_row gt_right">26.5&percnt;</td>
+      <td class="gt_row gt_right">32.3&percnt;</td>
+      <td class="gt_row gt_right">22.2&percnt;</td>
+      <td class="gt_row gt_right" style="background-color: #FFE6C2; color: #000000;">5.9&percnt;</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
 </div>
 
 

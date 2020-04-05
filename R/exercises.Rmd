@@ -29,9 +29,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 
 # Load packages 
 library(tidyverse)  # includes dplyr - filter / select
-library(knitr)      # for kable
-library(kableExtra) # for kable_styling and other utilities
-library(tblStrings) # for table strings
+library(gt)         # for tables
 
 nhanes <- read_rds('data/NHANES_analysis_post_exclusions.rds')
 
@@ -88,13 +86,12 @@ abbrevs <- c("SP = survey participant",
 
 # the enframe function transforms a vector into a tibble,
 enframe(nhanes_descr) %>% 
-  kable(col.names = c('Variable', 'Description')) %>% 
-  kable_styling(bootstrap_options = c('striped', 'hover')) %>% 
-  footnote(general = paste(abbrevs, collapse = '; '))
-
-# the paste() function is used here. To give a brief summary,
-# paste() combines string vectors. In this case, we are using 
-# paste to collapse a vector and separate each component by '; '
+  gt(rowname_col = "name") %>%
+  tab_stubhead(label = 'Variable name') %>% 
+  cols_label(value = 'Variable description') %>% 
+  cols_align('right') %>% 
+  tab_source_note(source_note = 'SP = survey participant; NHANES = National Health and Nutrition Examination Survey') %>% 
+  tab_header(title = 'Description of NHANES data')
 
 ```
 
@@ -174,32 +171,22 @@ read_rds('solutions/02_solution.rds')
 
 # Exercise 3
 
-I have made a package called `tblStrings` that helps you create presentation-ready strings using data. The package has a vector type called point-error, which formats a point and a margin of error in a way that matches what many journal articles expect. Here is how the function works:
+Using the `nhanes` data, compute race-by-sex specific estimates of the prevalence of hypertension in each exam year.
+
+Note: 
+
+- hypertension is defined as having systolic blood pressure > 140 mm Hg, diastolic blood pressure > 90 mm Hg, or currently using antihypertensive medications.
+
+- You will want to group by three variables.
 
 ```{r}
 
-pointErr(point = 12.154, error = 1.512)
+# Your code goes here
 
 ```
 
-You can also change the format of the output:
 
-```{r}
-
-# style can be 'pm' (plus/minus) or 'brac' (in brackets)
-pointErr(point = 12.154, error = 1.512, style = 'brac')
-
-```
-
-Apply `mutate` to add a column of point-error values to the summary data you created in exercise 1. Use the mean as a point estimate and the standard error as an error estimate. 
-
-```{r}
-
-# your code goes here
-
-```
-
-The new dataset should look like this:
+Your solution should look like this:
 
 ```{r}
 
@@ -209,41 +196,94 @@ read_rds('solutions/03_solution.rds')
 
 # Exercise 4
 
-`dplyr` has a function called `pull` that works a lot like `[[` and `$`. For example:
+Apply functions from the `gt` package to reproduce the table below.
+
+Notes: 
+
+- `gt` handles grouped datasets by creating a table subsection for each group.
+
+- `fmt_percent` and `fmt_missing` are used to control formatting
+
+- `summary_rows` is used to create the Overall summary for each sex group.
 
 ```{r}
 
-tmp <- nhanes[1:5, 1:5]
+# this will be useful
+exam_years <- c(
+  "1999",
+  "2001",
+  "2003",
+  "2005",
+  "2007",
+  "2009",
+  "2011",
+  "2013",
+  "2015",
+  "2017"
+)
 
-tmp$seqn
-
-tmp[['seqn']]
-
-tmp %>% 
-  pull(seqn)
+# Your code goes here
 
 ```
 
-You can use any of `[[`, `$`, or `pull` to work this next problem. 
 
-Isolate the point-error values for males and females in 2009, naming them `sbp_2009_males` and `sbp_2009_females`, respectively. Do the same for 2017, updating your names accordingly. Summarize your findings in 1-2 sentences using Rmarkdown's in-line reporting option (complete my interpretation below - edit the words if you want to).
+Your solution should look like this:
 
 ```{r}
 
-solution_4 <- read_rds('solutions/04_solution.rds')
+read_rds('solutions/04_solution.rds')
 
 ```
 
 
-In 2009, the mean $\pm$ standard error of systolic blood pressure for males and females was `r solution_4$sbp_2009_males` and `r solution_4$sbp_2009_females`, respectively. However, in 2017, the mean $\pm$ standard error systolic blood pressure had risen to ___ for males and ___ for females
+# Exercise 5
+
+Using the dataset you created in exercise 3, compare the prevalence of hypertension between 2013 and 2017 for race-sex groups. Compute the increase (relative and absolute) in prevalence for each group.
+
+Notes: 
+
+I recommend using `group_by`, then `filter`, then `summarize`, then `mutate`. Last, arrange the data by `sex` and (in descending order) the absolute increase in the prevalence of hypertension.
+
+```{r}
+
+# Your code goes here
+
+```
+
+Your solution should look like this:
+
+```{r}
+
+read_rds('solutions/05_solution.rds')
+
+```
 
 
+# Exercise 6
 
+Tabulate the data you created in exercise 5, using some of the stylistic features that `gt` offers. 
 
+Notes:
 
+- the function used to create table headers spanning columns is `tab_spanner()`
 
+- the function used to adjust printed column names if `cols_label()`
 
+- the function used to color cells is `data_color()`
 
+```{r}
+
+# Your code goes here
+
+```
+
+Your solution should look like this:
+
+```{r}
+
+read_rds('solutions/06_solution.rds')
+
+```
 
 
 
