@@ -1,0 +1,174 @@
+---
+title: "Isolating data with dplyr"
+subtitle: "also: pipes! %>%"
+author: "Byron C. Jaeger"
+date: "Last updated: `r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: "slides.css"
+    logo: img/intro_2R_hex.png
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: inverse, center, middle
+
+```{r, include = FALSE}
+
+library(magrittr)
+library(dplyr)
+library(readr)
+
+nhanes <- read_rds('data/NHANES_analysis_post_exclusions.rds') %>% 
+  select(seqn, exam, age, sex, race_ethnicity, education, 
+    starts_with('bp'), acr_mgg, starts_with('chol'))
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 12,
+  fig.height = 5.5,
+  dpi = 72 * 5
+)
+
+```
+
+# Tidy data
+
+---
+
+## Tidy data
+
+
+>Happy families are all alike; every unhappy family is unhappy in its own way. 
+>
+>Leo Tolstoy
+
+--
+
+.pull-left[
+**Characteristics of tidy data:**
+
+1. Each variable is a column.
+2. Each observation is a row.
+3. Each type of observational unit forms a table.
+]
+--
+.pull-right[
+**Characteristics of untidy data:**
+
+!@#$%^&*()
+]
+
+---
+
+class: center, middle
+
+# Pipes
+
+---
+
+## Where does the name come from?
+
+The pipe operator is implemented in the package **magrittr**.
+
+.pull-left[
+![pipe](img/magritte.jpg)
+]
+.pull-right[
+![magrittr](img/magrittr.jpg)
+]
+
+---
+
+## Review: How does a pipe work?
+
+- You can think about the following sequence of actions - find key, 
+unlock car, start car, drive to school, park.
+
+- Expressed as a set of nested functions in R:
+
+```{r eval=FALSE}
+park(drive(start_car(find("keys")), to = "campus"))
+```
+
+- Writing it out using pipes gives a more natural structure:
+
+```{r eval=FALSE}
+find("keys") %>%
+  start_car() %>%
+  drive(to = "campus") %>%
+  park()
+```
+
+---
+
+## What about other arguments?
+
+To send results to a function argument other than first one or to use the previous result for multiple arguments, use `.`:
+
+```{r fig.height=1.8, fig.width = 3.75}
+nhanes %>%
+  filter(sex == "Female") %>%
+  lm(bp_sys_mmhg ~ age, data = .) #<<
+```
+
+---
+
+class: center, middle
+
+# Data wrangling
+
+---
+
+## NHANES data
+
+Pulled from [NHANES website](https://wwwn.cdc.gov/nchs/nhanes/Default.aspx), filtered to `r nrow(nhanes)` observations by you.
+
+
+```{r}
+glimpse(nhanes, width = 60)
+```
+
+---
+layout: true
+background-image: url(img/hex-dplyr.png)
+background-size: 12.5%
+background-position: 95% 5%
+
+## `dplyr`
+
+---
+
+`dplyr` is known as the grammar of data manipulation. 
+
+Single data frame functions / verbs:
+
+- `select`, `rename`: select / rename specific columns by name
+- `pull`: grab a column as a vector
+- `filter`: pick rows matching criteria
+- `slice`: pick rows using index(es)
+- `arrange`: reorder rows
+- `mutate`: add new variables
+- `transmute`: create new data frame with variables
+- `summarise`: reduce variables to values
+- ... (many more)
+
+---
+
+`dplyr` has rules: 
+
+1. First argument is _always_ a data frame
+
+2. Subsequent arguments say what to do with that data frame
+
+3. _Always_ return a data frame
+
+4. Don't modify in place
+
+5. Performance via lazy evaluation
+
+

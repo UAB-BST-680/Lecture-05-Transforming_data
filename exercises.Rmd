@@ -82,7 +82,8 @@ nhanes_descr <- c(
 # abbreviations need to be placed in the footnote of the table
 abbrevs <- c("SP = survey participant", 
   "BP = blood pressure", 
-  "HDL = high density lipoprotein")
+  "HDL = high density lipoprotein") %>% 
+  paste(collapse = '; ')
 
 # the enframe function transforms a vector into a tibble,
 enframe(nhanes_descr) %>% 
@@ -90,7 +91,7 @@ enframe(nhanes_descr) %>%
   tab_stubhead(label = 'Variable name') %>% 
   cols_label(value = 'Variable description') %>% 
   cols_align('right') %>% 
-  tab_source_note(source_note = 'SP = survey participant; NHANES = National Health and Nutrition Examination Survey') %>% 
+  tab_source_note(source_note = abbrevs) %>% 
   tab_header(title = 'Description of NHANES data')
 
 ```

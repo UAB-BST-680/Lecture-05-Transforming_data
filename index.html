@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Isolating data with dplyr</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Byron C. Jaeger" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Isolating data with dplyr
+## also: pipes! %&gt;%
+### Byron C. Jaeger
+### Last updated: 2020-04-07
+
+---
+
+class: inverse, center, middle
+
+
+
+# Tidy data
+
+---
+
+## Tidy data
+
+
+&gt;Happy families are all alike; every unhappy family is unhappy in its own way. 
+&gt;
+&gt;Leo Tolstoy
+
+--
+
+.pull-left[
+**Characteristics of tidy data:**
+
+1. Each variable is a column.
+2. Each observation is a row.
+3. Each type of observational unit forms a table.
+]
+--
+.pull-right[
+**Characteristics of untidy data:**
+
+!@#$%^&amp;*()
+]
+
+---
+
+class: center, middle
+
+# Pipes
+
+---
+
+## Where does the name come from?
+
+The pipe operator is implemented in the package **magrittr**.
+
+.pull-left[
+![pipe](img/magritte.jpg)
+]
+.pull-right[
+![magrittr](img/magrittr.jpg)
+]
+
+---
+
+## Review: How does a pipe work?
+
+- You can think about the following sequence of actions - find key, 
+unlock car, start car, drive to school, park.
+
+- Expressed as a set of nested functions in R:
+
+
+```r
+park(drive(start_car(find("keys")), to = "campus"))
+```
+
+- Writing it out using pipes gives a more natural structure:
+
+
+```r
+find("keys") %&gt;%
+  start_car() %&gt;%
+  drive(to = "campus") %&gt;%
+  park()
+```
+
+---
+
+## What about other arguments?
+
+To send results to a function argument other than first one or to use the previous result for multiple arguments, use `.`:
+
+
+```r
+nhanes %&gt;%
+  filter(sex == "Female") %&gt;%
+* lm(bp_sys_mmhg ~ age, data = .)
+```
+
+```
+## 
+## Call:
+## lm(formula = bp_sys_mmhg ~ age, data = .)
+## 
+## Coefficients:
+## (Intercept)          age  
+##     92.7765       0.6337
+```
+
+---
+
+class: center, middle
+
+# Data wrangling
+
+---
+
+## NHANES data
+
+Pulled from [NHANES website](https://wwwn.cdc.gov/nchs/nhanes/Default.aspx), filtered to 51761 observations by you.
+
+
+
+```r
+glimpse(nhanes, width = 60)
+```
+
+```
+## Rows: 51,761
+## Columns: 14
+## $ seqn            &lt;dbl&gt; 2, 5, 6, 7, 10, 12, 13, 14, 15,...
+## $ exam            &lt;fct&gt; 1999, 1999, 1999, 1999, 1999, 1...
+## $ age             &lt;dbl&gt; 77, 49, 19, 59, 43, 37, 70, 81,...
+## $ sex             &lt;fct&gt; Male, Male, Female, Female, Mal...
+## $ race_ethnicity  &lt;fct&gt; Non-Hispanic White, Non-Hispani...
+## $ education       &lt;fct&gt; College graduate, College gradu...
+## $ bp_sys_mmhg     &lt;dbl&gt; 100.6667, 122.0000, 114.6667, 1...
+## $ bp_dia_mmhg     &lt;dbl&gt; 56.66667, 82.66667, 68.00000, 8...
+## $ bp_controlled   &lt;chr&gt; "Yes", "Yes", "Yes", "Yes", "No...
+## $ bp_high_aware   &lt;chr&gt; "No", "Yes", "No", "Yes", "No",...
+## $ bp_meds         &lt;chr&gt; "No", "Yes", "No", "No", "No", ...
+## $ acr_mgg         &lt;dbl&gt; 6.275862, 3.546512, 4.032258, 5...
+## $ chol_hdl_mgdl   &lt;dbl&gt; 54, 42, 61, 105, 51, 38, 49, 40...
+## $ chol_total_mgdl &lt;dbl&gt; 215, 279, 153, 245, 140, 156, 3...
+```
+
+---
+layout: true
+background-image: url(img/hex-dplyr.png)
+background-size: 12.5%
+background-position: 95% 5%
+
+## `dplyr`
+
+---
+
+`dplyr` is known as the grammar of data manipulation. 
+
+Single data frame functions / verbs:
+
+- `select`, `rename`: select / rename specific columns by name
+- `pull`: grab a column as a vector
+- `filter`: pick rows matching criteria
+- `slice`: pick rows using index(es)
+- `arrange`: reorder rows
+- `mutate`: add new variables
+- `transmute`: create new data frame with variables
+- `summarise`: reduce variables to values
+- ... (many more)
+
+---
+
+`dplyr` has rules: 
+
+1. First argument is _always_ a data frame
+
+2. Subsequent arguments say what to do with that data frame
+
+3. _Always_ return a data frame
+
+4. Don't modify in place (this is what `data.table` does)
+
+5. Performance via lazy evaluation
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
