@@ -1,6 +1,6 @@
 ---
 title: "Transforming data with dplyr"
-subtitle: "also: pipes! %>%"
+subtitle: "Introduction to tidy principles"
 author: "Byron C. Jaeger"
 date: "Last updated: `r Sys.Date()`"
 output:
