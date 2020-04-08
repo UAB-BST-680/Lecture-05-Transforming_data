@@ -2930,7 +2930,8 @@ nhanes_descr &lt;- c(
 # abbreviations need to be placed in the footnote of the table
 abbrevs &lt;- c(&quot;SP = survey participant&quot;, 
   &quot;BP = blood pressure&quot;, 
-  &quot;HDL = high density lipoprotein&quot;)
+  &quot;HDL = high density lipoprotein&quot;) %&gt;% 
+  paste(collapse = &#39;; &#39;)
 
 # the enframe function transforms a vector into a tibble,
 enframe(nhanes_descr) %&gt;% 
@@ -2938,13 +2939,13 @@ enframe(nhanes_descr) %&gt;%
   tab_stubhead(label = &#39;Variable name&#39;) %&gt;% 
   cols_label(value = &#39;Variable description&#39;) %&gt;% 
   cols_align(&#39;right&#39;) %&gt;% 
-  tab_source_note(source_note = &#39;SP = survey participant; NHANES = National Health and Nutrition Examination Survey&#39;) %&gt;% 
+  tab_source_note(source_note = abbrevs) %&gt;% 
   tab_header(title = &#39;Description of NHANES data&#39;)</code></pre>
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#aptxazmoqp .gt_table {
+#vugvvmtskl .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -2967,7 +2968,7 @@ enframe(nhanes_descr) %&gt;%
   border-left-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_heading {
+#vugvvmtskl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2979,7 +2980,7 @@ enframe(nhanes_descr) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_title {
+#vugvvmtskl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2989,7 +2990,7 @@ enframe(nhanes_descr) %&gt;%
   border-bottom-width: 0;
 }
 
-#aptxazmoqp .gt_subtitle {
+#vugvvmtskl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2999,13 +3000,13 @@ enframe(nhanes_descr) %&gt;%
   border-top-width: 0;
 }
 
-#aptxazmoqp .gt_bottom_border {
+#vugvvmtskl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_col_headings {
+#vugvvmtskl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3020,7 +3021,7 @@ enframe(nhanes_descr) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_col_heading {
+#vugvvmtskl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3040,7 +3041,7 @@ enframe(nhanes_descr) %&gt;%
   overflow-x: hidden;
 }
 
-#aptxazmoqp .gt_column_spanner_outer {
+#vugvvmtskl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3052,15 +3053,15 @@ enframe(nhanes_descr) %&gt;%
   padding-right: 4px;
 }
 
-#aptxazmoqp .gt_column_spanner_outer:first-child {
+#vugvvmtskl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#aptxazmoqp .gt_column_spanner_outer:last-child {
+#vugvvmtskl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#aptxazmoqp .gt_column_spanner {
+#vugvvmtskl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3072,7 +3073,7 @@ enframe(nhanes_descr) %&gt;%
   width: 100%;
 }
 
-#aptxazmoqp .gt_group_heading {
+#vugvvmtskl .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3094,7 +3095,7 @@ enframe(nhanes_descr) %&gt;%
   vertical-align: middle;
 }
 
-#aptxazmoqp .gt_empty_group_heading {
+#vugvvmtskl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3109,19 +3110,19 @@ enframe(nhanes_descr) %&gt;%
   vertical-align: middle;
 }
 
-#aptxazmoqp .gt_striped {
+#vugvvmtskl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#aptxazmoqp .gt_from_md > :first-child {
+#vugvvmtskl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#aptxazmoqp .gt_from_md > :last-child {
+#vugvvmtskl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#aptxazmoqp .gt_row {
+#vugvvmtskl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3140,7 +3141,7 @@ enframe(nhanes_descr) %&gt;%
   overflow-x: hidden;
 }
 
-#aptxazmoqp .gt_stub {
+#vugvvmtskl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3152,7 +3153,7 @@ enframe(nhanes_descr) %&gt;%
   padding-left: 12px;
 }
 
-#aptxazmoqp .gt_summary_row {
+#vugvvmtskl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3162,7 +3163,7 @@ enframe(nhanes_descr) %&gt;%
   padding-right: 5px;
 }
 
-#aptxazmoqp .gt_first_summary_row {
+#vugvvmtskl .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3172,7 +3173,7 @@ enframe(nhanes_descr) %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_grand_summary_row {
+#vugvvmtskl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3182,7 +3183,7 @@ enframe(nhanes_descr) %&gt;%
   padding-right: 5px;
 }
 
-#aptxazmoqp .gt_first_grand_summary_row {
+#vugvvmtskl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3192,7 +3193,7 @@ enframe(nhanes_descr) %&gt;%
   border-top-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_table_body {
+#vugvvmtskl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3201,7 +3202,7 @@ enframe(nhanes_descr) %&gt;%
   border-bottom-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_footnotes {
+#vugvvmtskl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3215,13 +3216,13 @@ enframe(nhanes_descr) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_footnote {
+#vugvvmtskl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#aptxazmoqp .gt_sourcenotes {
+#vugvvmtskl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3235,46 +3236,46 @@ enframe(nhanes_descr) %&gt;%
   border-right-color: #D3D3D3;
 }
 
-#aptxazmoqp .gt_sourcenote {
+#vugvvmtskl .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#aptxazmoqp .gt_left {
+#vugvvmtskl .gt_left {
   text-align: left;
 }
 
-#aptxazmoqp .gt_center {
+#vugvvmtskl .gt_center {
   text-align: center;
 }
 
-#aptxazmoqp .gt_right {
+#vugvvmtskl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#aptxazmoqp .gt_font_normal {
+#vugvvmtskl .gt_font_normal {
   font-weight: normal;
 }
 
-#aptxazmoqp .gt_font_bold {
+#vugvvmtskl .gt_font_bold {
   font-weight: bold;
 }
 
-#aptxazmoqp .gt_font_italic {
+#vugvvmtskl .gt_font_italic {
   font-style: italic;
 }
 
-#aptxazmoqp .gt_super {
+#vugvvmtskl .gt_super {
   font-size: 65%;
 }
 
-#aptxazmoqp .gt_footnote_marks {
+#vugvvmtskl .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="aptxazmoqp" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="vugvvmtskl" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="2" class="gt_heading gt_title gt_font_normal" style>Description of NHANES data</th>
@@ -3385,7 +3386,7 @@ enframe(nhanes_descr) %&gt;%
   </tbody>
   <tfoot class="gt_sourcenotes">
     <tr>
-      <td class="gt_sourcenote" colspan="2">SP = survey participant; NHANES = National Health and Nutrition Examination Survey</td>
+      <td class="gt_sourcenote" colspan="2">SP = survey participant; BP = blood pressure; HDL = high density lipoprotein</td>
     </tr>
   </tfoot>
   
@@ -3494,7 +3495,7 @@ exam_years &lt;- c(
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#iptzewdsgc .gt_table {
+#ynphzdrldp .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3517,7 +3518,7 @@ exam_years &lt;- c(
   border-left-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_heading {
+#ynphzdrldp .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3529,7 +3530,7 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_title {
+#ynphzdrldp .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3539,7 +3540,7 @@ exam_years &lt;- c(
   border-bottom-width: 0;
 }
 
-#iptzewdsgc .gt_subtitle {
+#ynphzdrldp .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3549,13 +3550,13 @@ exam_years &lt;- c(
   border-top-width: 0;
 }
 
-#iptzewdsgc .gt_bottom_border {
+#ynphzdrldp .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_col_headings {
+#ynphzdrldp .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3570,7 +3571,7 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_col_heading {
+#ynphzdrldp .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3590,7 +3591,7 @@ exam_years &lt;- c(
   overflow-x: hidden;
 }
 
-#iptzewdsgc .gt_column_spanner_outer {
+#ynphzdrldp .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3602,15 +3603,15 @@ exam_years &lt;- c(
   padding-right: 4px;
 }
 
-#iptzewdsgc .gt_column_spanner_outer:first-child {
+#ynphzdrldp .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#iptzewdsgc .gt_column_spanner_outer:last-child {
+#ynphzdrldp .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#iptzewdsgc .gt_column_spanner {
+#ynphzdrldp .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3622,7 +3623,7 @@ exam_years &lt;- c(
   width: 100%;
 }
 
-#iptzewdsgc .gt_group_heading {
+#ynphzdrldp .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3644,7 +3645,7 @@ exam_years &lt;- c(
   vertical-align: middle;
 }
 
-#iptzewdsgc .gt_empty_group_heading {
+#ynphzdrldp .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3659,19 +3660,19 @@ exam_years &lt;- c(
   vertical-align: middle;
 }
 
-#iptzewdsgc .gt_striped {
+#ynphzdrldp .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#iptzewdsgc .gt_from_md > :first-child {
+#ynphzdrldp .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#iptzewdsgc .gt_from_md > :last-child {
+#ynphzdrldp .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#iptzewdsgc .gt_row {
+#ynphzdrldp .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3690,7 +3691,7 @@ exam_years &lt;- c(
   overflow-x: hidden;
 }
 
-#iptzewdsgc .gt_stub {
+#ynphzdrldp .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3702,7 +3703,7 @@ exam_years &lt;- c(
   padding-left: 12px;
 }
 
-#iptzewdsgc .gt_summary_row {
+#ynphzdrldp .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3712,7 +3713,7 @@ exam_years &lt;- c(
   padding-right: 5px;
 }
 
-#iptzewdsgc .gt_first_summary_row {
+#ynphzdrldp .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3722,7 +3723,7 @@ exam_years &lt;- c(
   border-top-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_grand_summary_row {
+#ynphzdrldp .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3732,7 +3733,7 @@ exam_years &lt;- c(
   padding-right: 5px;
 }
 
-#iptzewdsgc .gt_first_grand_summary_row {
+#ynphzdrldp .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3742,7 +3743,7 @@ exam_years &lt;- c(
   border-top-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_table_body {
+#ynphzdrldp .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3751,7 +3752,7 @@ exam_years &lt;- c(
   border-bottom-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_footnotes {
+#ynphzdrldp .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3765,13 +3766,13 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_footnote {
+#ynphzdrldp .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#iptzewdsgc .gt_sourcenotes {
+#ynphzdrldp .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3785,46 +3786,46 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#iptzewdsgc .gt_sourcenote {
+#ynphzdrldp .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#iptzewdsgc .gt_left {
+#ynphzdrldp .gt_left {
   text-align: left;
 }
 
-#iptzewdsgc .gt_center {
+#ynphzdrldp .gt_center {
   text-align: center;
 }
 
-#iptzewdsgc .gt_right {
+#ynphzdrldp .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#iptzewdsgc .gt_font_normal {
+#ynphzdrldp .gt_font_normal {
   font-weight: normal;
 }
 
-#iptzewdsgc .gt_font_bold {
+#ynphzdrldp .gt_font_bold {
   font-weight: bold;
 }
 
-#iptzewdsgc .gt_font_italic {
+#ynphzdrldp .gt_font_italic {
   font-style: italic;
 }
 
-#iptzewdsgc .gt_super {
+#ynphzdrldp .gt_super {
   font-size: 65%;
 }
 
-#iptzewdsgc .gt_footnote_marks {
+#ynphzdrldp .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="iptzewdsgc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="ynphzdrldp" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   <thead class="gt_header">
     <tr>
       <th colspan="11" class="gt_heading gt_title gt_font_normal" style>Trends in the prevalence of hypertension</th>
@@ -4051,7 +4052,7 @@ exam_years &lt;- c(
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#wofdlsitmt .gt_table {
+#pudgabqwka .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -4074,7 +4075,7 @@ exam_years &lt;- c(
   border-left-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_heading {
+#pudgabqwka .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4086,7 +4087,7 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_title {
+#pudgabqwka .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4096,7 +4097,7 @@ exam_years &lt;- c(
   border-bottom-width: 0;
 }
 
-#wofdlsitmt .gt_subtitle {
+#pudgabqwka .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4106,13 +4107,13 @@ exam_years &lt;- c(
   border-top-width: 0;
 }
 
-#wofdlsitmt .gt_bottom_border {
+#pudgabqwka .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_col_headings {
+#pudgabqwka .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4127,7 +4128,7 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_col_heading {
+#pudgabqwka .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4147,7 +4148,7 @@ exam_years &lt;- c(
   overflow-x: hidden;
 }
 
-#wofdlsitmt .gt_column_spanner_outer {
+#pudgabqwka .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4159,15 +4160,15 @@ exam_years &lt;- c(
   padding-right: 4px;
 }
 
-#wofdlsitmt .gt_column_spanner_outer:first-child {
+#pudgabqwka .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wofdlsitmt .gt_column_spanner_outer:last-child {
+#pudgabqwka .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wofdlsitmt .gt_column_spanner {
+#pudgabqwka .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4179,7 +4180,7 @@ exam_years &lt;- c(
   width: 100%;
 }
 
-#wofdlsitmt .gt_group_heading {
+#pudgabqwka .gt_group_heading {
   padding: 8px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4201,7 +4202,7 @@ exam_years &lt;- c(
   vertical-align: middle;
 }
 
-#wofdlsitmt .gt_empty_group_heading {
+#pudgabqwka .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4216,19 +4217,19 @@ exam_years &lt;- c(
   vertical-align: middle;
 }
 
-#wofdlsitmt .gt_striped {
+#pudgabqwka .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wofdlsitmt .gt_from_md > :first-child {
+#pudgabqwka .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wofdlsitmt .gt_from_md > :last-child {
+#pudgabqwka .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wofdlsitmt .gt_row {
+#pudgabqwka .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4247,7 +4248,7 @@ exam_years &lt;- c(
   overflow-x: hidden;
 }
 
-#wofdlsitmt .gt_stub {
+#pudgabqwka .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4259,7 +4260,7 @@ exam_years &lt;- c(
   padding-left: 12px;
 }
 
-#wofdlsitmt .gt_summary_row {
+#pudgabqwka .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4269,7 +4270,7 @@ exam_years &lt;- c(
   padding-right: 5px;
 }
 
-#wofdlsitmt .gt_first_summary_row {
+#pudgabqwka .gt_first_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4279,7 +4280,7 @@ exam_years &lt;- c(
   border-top-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_grand_summary_row {
+#pudgabqwka .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4289,7 +4290,7 @@ exam_years &lt;- c(
   padding-right: 5px;
 }
 
-#wofdlsitmt .gt_first_grand_summary_row {
+#pudgabqwka .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4299,7 +4300,7 @@ exam_years &lt;- c(
   border-top-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_table_body {
+#pudgabqwka .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4308,7 +4309,7 @@ exam_years &lt;- c(
   border-bottom-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_footnotes {
+#pudgabqwka .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4322,13 +4323,13 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_footnote {
+#pudgabqwka .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding: 4px;
 }
 
-#wofdlsitmt .gt_sourcenotes {
+#pudgabqwka .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4342,46 +4343,46 @@ exam_years &lt;- c(
   border-right-color: #D3D3D3;
 }
 
-#wofdlsitmt .gt_sourcenote {
+#pudgabqwka .gt_sourcenote {
   font-size: 90%;
   padding: 4px;
 }
 
-#wofdlsitmt .gt_left {
+#pudgabqwka .gt_left {
   text-align: left;
 }
 
-#wofdlsitmt .gt_center {
+#pudgabqwka .gt_center {
   text-align: center;
 }
 
-#wofdlsitmt .gt_right {
+#pudgabqwka .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wofdlsitmt .gt_font_normal {
+#pudgabqwka .gt_font_normal {
   font-weight: normal;
 }
 
-#wofdlsitmt .gt_font_bold {
+#pudgabqwka .gt_font_bold {
   font-weight: bold;
 }
 
-#wofdlsitmt .gt_font_italic {
+#pudgabqwka .gt_font_italic {
   font-style: italic;
 }
 
-#wofdlsitmt .gt_super {
+#pudgabqwka .gt_super {
   font-size: 65%;
 }
 
-#wofdlsitmt .gt_footnote_marks {
+#pudgabqwka .gt_footnote_marks {
   font-style: italic;
   font-size: 65%;
 }
 </style>
-<div id="wofdlsitmt" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<div id="pudgabqwka" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>

@@ -1,5 +1,5 @@
 ---
-title: "Isolating data with dplyr"
+title: "Transforming data with dplyr"
 subtitle: "also: pipes! %>%"
 author: "Byron C. Jaeger"
 date: "Last updated: `r Sys.Date()`"
@@ -19,6 +19,7 @@ class: inverse, center, middle
 
 library(magrittr)
 library(dplyr)
+library(ggplot2)
 library(readr)
 
 nhanes <- read_rds('data/NHANES_analysis_post_exclusions.rds') %>% 
@@ -139,7 +140,7 @@ background-image: url(img/hex-dplyr.png)
 background-size: 12.5%
 background-position: 95% 5%
 
-## `dplyr`
+## Data wrangling
 
 ---
 
@@ -155,10 +156,10 @@ Single data frame functions / verbs:
 - `mutate`: add new variables
 - `transmute`: create new data frame with variables
 - `summarise`: reduce variables to values
+- `count`: special case of `summarise` that computes frequencies.
 - ... (many more)
 
 ---
-
 
 `dplyr` has rules: 
 
@@ -171,5 +172,150 @@ Single data frame functions / verbs:
 4. Don't modify in place
 
 5. Performance via lazy evaluation
+
+---
+
+Let's make some conditional variables!
+
+- `albuminuria`: 
+
+    + 'Yes' if ACR > 30 mg / g
+    
+    + 'No' otherwise.
+
+- `bp_cat`:
+
+    + 'Normotensive' if SBP < 130 and DBP < 80 mm Hg
+
+    + 'Hypertension' if SBP is 130 to < 140 or DBP is 80 to < 90 mm Hg
+
+    + 'Uncontrolled' if SBP is > 140 or DBP is > 90 mm Hg
+
+---
+
+`dplyr` provides two main functions for conditional execution:
+
+- `if_else()` for variables with 2 categories
+
+- `case_when()` for variables with >2 categories
+
+---
+
+- `albuminuria`: 
+
+    + 'Yes' if ACR > 30 mg / g
+    
+    + 'No' otherwise.
+
+```{r}
+
+nhanes <- nhanes %>% 
+  mutate(
+    albuminuria = if_else(
+      condition = acr_mgg > 30,
+      true = 'Yes', 
+      false = 'No'
+    )
+  )
+
+```
+
+---
+
+__Check your work!__
+
+Make it a habit to check each data processing step you complete.
+
+- Yes, this will slow you down in the short term
+
+- Yes, it is very much worth it.
+
+```{r}
+
+nhanes %$% table(albuminuria, acr_mgg > 30)
+
+# same thing as table(nhanes$albuminuria, nhanes$acr_mgg > 30)
+
+```
+
+---
+
+- `bp_cat`:
+
+    + 'Normotensive' if SBP < 130 and DBP < 80 mm Hg
+    
+    + 'Hypertension' if SBP is 130 to < 140 or DBP is 80 to < 90 mm Hg
+    
+    + 'Uncontrolled' if SBP is > 140 or DBP is > 90 mm Hg
+
+```{r}
+
+nhanes <- nhanes %>% 
+  mutate(
+    bp_cat = case_when(
+      bp_sys_mmhg  < 130 & bp_dia_mmhg  < 80 ~ "Normotensive",
+      bp_sys_mmhg  < 140 & bp_dia_mmhg  < 90 ~ "Hypertension",
+      bp_sys_mmhg >= 140 | bp_dia_mmhg >= 90 ~ "Uncontrolled",
+      TRUE ~ NA_character_ # added for clarity
+    )
+  )
+
+```
+
+---
+
+__Check your work!__
+
+
+```{r}
+ggplot(nhanes) + 
+  aes(x = bp_sys_mmhg, y = bp_dia_mmhg, col = bp_cat) + 
+  geom_point()
+```
+
+---
+
+Use `summarize()` to, well, summarize your data
+
+The values are summarised in a data frame
+
+```{r}
+nhanes %>%
+  summarise(
+    mean_sbp = mean(bp_sys_mmhg),
+    mean_dbp = mean(bp_dia_mmhg),
+    prevalence_alb = mean(albuminuria == 'Yes', na.rm = TRUE)
+  )
+  
+```
+
+---
+
+`group_by() %>% summarize()` summarizes each group:
+
+
+```{r}
+nhanes %>%
+  group_by(exam) %>% 
+  summarise(mean_sbp = mean(bp_sys_mmhg),
+    prevalence_alb = mean(albuminuria == 'Yes', na.rm = TRUE))
+  
+```
+
+---
+
+`across()` accesses multiple columns:
+
+
+```{r}
+
+nhanes %>%
+  group_by(exam) %>% 
+  summarise(across(
+    .cols = c(age, bp_sys_mmhg), 
+    .fns = list(mean = mean, median = median)
+  ))
+
+```
 
 
