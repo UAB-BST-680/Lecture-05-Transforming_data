@@ -24,7 +24,8 @@ library(readr)
 
 nhanes <- read_rds('data/NHANES_analysis_post_exclusions.rds') %>% 
   select(seqn, exam, age, sex, race_ethnicity, education, 
-    starts_with('bp'), acr_mgg, starts_with('chol'))
+    starts_with('bp'), acr_mgg, starts_with('chol')) %>% 
+  mutate(bp_high_aware = as.numeric(bp_high_aware == 'Yes'))
 
 knitr::opts_chunk$set(
   echo = TRUE,
@@ -303,19 +304,234 @@ nhanes %>%
 ```
 
 ---
+class: center, middle
+layout: false
 
-`across()` accesses multiple columns:
+# Wrangling categorical data
+
+---
+layout: true
+background-image: url(img/hex-forcats.png)
+background-size: 12.5%
+background-position: 95% 5%
+
+## Factors
+
+---
+
+- factors are used to work with categorical variables
+
+- categorical variables have a fixed and known set of finite values. 
 
 
 ```{r}
 
-nhanes %>%
-  group_by(exam) %>% 
-  summarise(across(
-    .cols = c(age, bp_sys_mmhg), 
-    .fns = list(mean = mean, median = median)
-  ))
+fctr <- factor(
+  x = c(1, 2, 2, 3),
+  levels = c(1,2,3),
+  labels = c("A", "B", "C")
+)
+
+fctr
 
 ```
+
+---
+
+Sometimes factors make you say, "I don't know about that"
+
+.pull-left[
+```{r}
+
+x1 <- factor(c(1,2), 
+  labels = c('a','b'))
+
+x2 <- factor(3, labels = 'c')
+
+
+c(x1, x2)
+
+```
+]
+
+--
+
+.pull-right[
+
+
+```{r, echo = FALSE, fig.align='center', out.width = '100%'}
+
+knitr::include_graphics('img/chappelle_skeptic.png')
+
+```
+]
+
+- `forcats` makes factors easier to wrangle
+
+```{r}
+forcats::fct_c(x1, x2)
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you want to impose an ordering that is not alphabetical.
+
+```{r}
+
+count(nhanes, bp_cat)
+
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you want to impose an ordering that is not alphabetical.
+
+```{r}
+
+nhanes <- nhanes %>% 
+  mutate(
+    bp_cat = factor(
+      x = bp_cat, 
+      levels = c('Normotensive', 'Hypertension', 'Uncontrolled')
+    )
+  )
+
+count(nhanes, bp_cat)
+
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you have a numeric variable that should be a categorical one
+
+```{r}
+
+count(nhanes, bp_high_aware)
+
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you have a numeric variable that should be a categorical one
+
+```{r}
+
+nhanes <- nhanes %>% 
+  mutate(
+    bp_high_aware = factor(
+      x = bp_high_aware, 
+      levels = c(0, 1),
+      labels = c("No", "Yes")
+    )
+  )
+
+count(nhanes, bp_high_aware)
+
+```
+
+---
+
+Relevel factors (change their order) with `forcats`: 
+
+```{r}
+
+library(forcats)
+
+nhanes %>% 
+  mutate(
+    bp_cat = fct_relevel(
+      bp_cat, 'Uncontrolled', 'Hypertension'
+    )
+  ) %>% 
+  count(bp_cat)
+
+```
+
+---
+
+Collapse factors (lump categories) with `forcats`: 
+
+```{r}
+
+nhanes %>% 
+  mutate(
+    bp_cat = fct_collapse(
+      bp_cat, 
+      "Hypertensive" = c("Hypertension", "Uncontrolled")
+    )
+  ) %>% 
+  count(bp_cat)
+
+```
+
+---
+
+Explicitly set factor missing levels to their own category
+
+```{r}
+
+count(nhanes, education)
+
+```
+
+---
+
+Explicitly set factor missing levels to their own category
+
+```{r}
+
+nhanes <- nhanes %>% 
+  mutate(
+    education = fct_explicit_na(
+      f = education,
+      na_level = 'Missing' 
+    )
+  )
+
+count(nhanes, education)
+
+```
+
+---
+
+Recode factor levels manually:
+
+```{r}
+
+nhanes %>% 
+  mutate(
+    education = fct_recode(
+      education,
+      # new level = old level
+      'less_than_hs' = 'Less than high school',
+      'hs_some_college' = 'High school/some college',
+      'college_grad' = 'College graduate'        
+    )
+  ) %>% 
+  count(education)
+
+```
+
+---
+layout: false
+
+## Learning more
+
+- Data transformation and `forcats` cheatsheets available on [Rstudio cloud](https://rstudio.cloud/learn/cheat-sheets)
+
+- Package websites:
+
+    + dplyr: https://dplyr.tidyverse.org/index.html
+    
+    + forcats: https://forcats.tidyverse.org/
+
 
 

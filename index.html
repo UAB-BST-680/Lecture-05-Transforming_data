@@ -11,9 +11,9 @@
 class: center, middle, inverse, title-slide
 
 # Transforming data with dplyr
-## also: pipes! %&gt;%
+## Introduction to tidy principles
 ### Byron C. Jaeger
-### Last updated: 2020-04-08
+### Last updated: 2020-04-22
 
 ---
 
@@ -144,7 +144,7 @@ glimpse(nhanes, width = 60)
 ## $ bp_sys_mmhg     &lt;dbl&gt; 100.6667, 122.0000, 114.6667, 1...
 ## $ bp_dia_mmhg     &lt;dbl&gt; 56.66667, 82.66667, 68.00000, 8...
 ## $ bp_controlled   &lt;chr&gt; "Yes", "Yes", "Yes", "Yes", "No...
-## $ bp_high_aware   &lt;chr&gt; "No", "Yes", "No", "Yes", "No",...
+## $ bp_high_aware   &lt;dbl&gt; 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0...
 ## $ bp_meds         &lt;chr&gt; "No", "Yes", "No", "No", "No", ...
 ## $ acr_mgg         &lt;dbl&gt; 6.275862, 3.546512, 4.032258, 5...
 ## $ chol_hdl_mgdl   &lt;dbl&gt; 54, 42, 61, 105, 51, 38, 49, 40...
@@ -338,7 +338,7 @@ nhanes %&gt;%
 ```
 ## # A tibble: 10 x 3
 ##    exam  mean_sbp prevalence_alb
-##  * &lt;fct&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+##    &lt;fct&gt;    &lt;dbl&gt;          &lt;dbl&gt;
 ##  1 1999      127.          0.134
 ##  2 2001      126.          0.119
 ##  3 2003      125.          0.114
@@ -352,35 +352,315 @@ nhanes %&gt;%
 ```
 
 ---
+class: center, middle
+layout: false
 
-`across()` accesses multiple columns:
+# Wrangling categorical data
+
+---
+layout: true
+background-image: url(img/hex-forcats.png)
+background-size: 12.5%
+background-position: 95% 5%
+
+## Factors
+
+---
+
+- factors are used to work with categorical variables
+
+- categorical variables have a fixed and known set of finite values. 
 
 
 
 ```r
-nhanes %&gt;%
-  group_by(exam) %&gt;% 
-  summarise(across(
-    .cols = c(age, bp_sys_mmhg), 
-    .fns = list(mean = mean, median = median)
-  ))
+fctr &lt;- factor(
+  x = c(1, 2, 2, 3),
+  levels = c(1,2,3),
+  labels = c("A", "B", "C")
+)
+
+fctr
 ```
 
 ```
-## # A tibble: 10 x 5
-##    exam  age_mean age_median bp_sys_mmhg_mean bp_sys_mmhg_median
-##  * &lt;fct&gt;    &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;              &lt;dbl&gt;
-##  1 1999      47.7         46             127.               123.
-##  2 2001      47.3         46             126.               121.
-##  3 2003      47.7         46             125.               121.
-##  4 2005      46.3         45             124.               121.
-##  5 2007      49.3         49             124.               121.
-##  6 2009      48.3         48             122.               119.
-##  7 2011      47.4         47             123.               120 
-##  8 2013      47.5         47             123.               119.
-##  9 2015      48.3         48             125.               123.
-## 10 2017      50.0         52             126.               123.
+## [1] A B B C
+## Levels: A B C
 ```
+
+---
+
+Sometimes factors make you say, "I don't know about that"
+
+.pull-left[
+
+```r
+x1 &lt;- factor(c(1,2), 
+  labels = c('a','b'))
+
+x2 &lt;- factor(3, labels = 'c')
+
+
+c(x1, x2)
+```
+
+```
+## [1] 1 2 1
+```
+]
+
+--
+
+.pull-right[
+
+
+&lt;img src="img/chappelle_skeptic.png" width="100%" style="display: block; margin: auto;" /&gt;
+]
+
+- `forcats` makes factors easier to wrangle
+
+
+```r
+forcats::fct_c(x1, x2)
+```
+
+```
+## [1] a b c
+## Levels: a b c
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you want to impose an ordering that is not alphabetical.
+
+
+```r
+count(nhanes, bp_cat)
+```
+
+```
+## # A tibble: 3 x 2
+##   bp_cat           n
+##   &lt;chr&gt;        &lt;int&gt;
+## 1 Hypertension 10325
+## 2 Normotensive 31075
+## 3 Uncontrolled 10361
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you want to impose an ordering that is not alphabetical.
+
+
+```r
+nhanes &lt;- nhanes %&gt;% 
+  mutate(
+    bp_cat = factor(
+      x = bp_cat, 
+      levels = c('Normotensive', 'Hypertension', 'Uncontrolled')
+    )
+  )
+
+count(nhanes, bp_cat)
+```
+
+```
+## # A tibble: 3 x 2
+##   bp_cat           n
+##   &lt;fct&gt;        &lt;int&gt;
+## 1 Normotensive 31075
+## 2 Hypertension 10325
+## 3 Uncontrolled 10361
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you have a numeric variable that should be a categorical one
+
+
+```r
+count(nhanes, bp_high_aware)
+```
+
+```
+## # A tibble: 2 x 2
+##   bp_high_aware     n
+##           &lt;dbl&gt; &lt;int&gt;
+## 1             0 34514
+## 2             1 17247
+```
+
+---
+
+Convert character/numeric vectors to factors if 
+
+- you have a numeric variable that should be a categorical one
+
+
+```r
+nhanes &lt;- nhanes %&gt;% 
+  mutate(
+    bp_high_aware = factor(
+      x = bp_high_aware, 
+      levels = c(0, 1),
+      labels = c("No", "Yes")
+    )
+  )
+
+count(nhanes, bp_high_aware)
+```
+
+```
+## # A tibble: 2 x 2
+##   bp_high_aware     n
+##   &lt;fct&gt;         &lt;int&gt;
+## 1 No            34514
+## 2 Yes           17247
+```
+
+---
+
+Relevel factors (change their order) with `forcats`: 
+
+
+```r
+library(forcats)
+
+nhanes %&gt;% 
+  mutate(
+    bp_cat = fct_relevel(
+      bp_cat, 'Uncontrolled', 'Hypertension'
+    )
+  ) %&gt;% 
+  count(bp_cat)
+```
+
+```
+## # A tibble: 3 x 2
+##   bp_cat           n
+##   &lt;fct&gt;        &lt;int&gt;
+## 1 Uncontrolled 10361
+## 2 Hypertension 10325
+## 3 Normotensive 31075
+```
+
+---
+
+Collapse factors (lump categories) with `forcats`: 
+
+
+```r
+nhanes %&gt;% 
+  mutate(
+    bp_cat = fct_collapse(
+      bp_cat, 
+      "Hypertensive" = c("Hypertension", "Uncontrolled")
+    )
+  ) %&gt;% 
+  count(bp_cat)
+```
+
+```
+## # A tibble: 2 x 2
+##   bp_cat           n
+##   &lt;fct&gt;        &lt;int&gt;
+## 1 Normotensive 31075
+## 2 Hypertensive 20686
+```
+
+---
+
+Explicitly set factor missing levels to their own category
+
+
+```r
+count(nhanes, education)
+```
+
+```
+## # A tibble: 4 x 2
+##   education                    n
+##   &lt;fct&gt;                    &lt;int&gt;
+## 1 Less than high school    14389
+## 2 High school/some college 26076
+## 3 College graduate         10344
+## 4 &lt;NA&gt;                       952
+```
+
+---
+
+Explicitly set factor missing levels to their own category
+
+
+```r
+nhanes &lt;- nhanes %&gt;% 
+  mutate(
+    education = fct_explicit_na(
+      f = education,
+      na_level = 'Missing' 
+    )
+  )
+
+count(nhanes, education)
+```
+
+```
+## # A tibble: 4 x 2
+##   education                    n
+##   &lt;fct&gt;                    &lt;int&gt;
+## 1 Less than high school    14389
+## 2 High school/some college 26076
+## 3 College graduate         10344
+## 4 Missing                    952
+```
+
+---
+
+Recode factor levels manually:
+
+
+```r
+nhanes %&gt;% 
+  mutate(
+    education = fct_recode(
+      education,
+      # new level = old level
+      'less_than_hs' = 'Less than high school',
+      'hs_some_college' = 'High school/some college',
+      'college_grad' = 'College graduate'        
+    )
+  ) %&gt;% 
+  count(education)
+```
+
+```
+## # A tibble: 4 x 2
+##   education           n
+##   &lt;fct&gt;           &lt;int&gt;
+## 1 less_than_hs    14389
+## 2 hs_some_college 26076
+## 3 college_grad    10344
+## 4 Missing           952
+```
+
+---
+layout: false
+
+## Learning more
+
+- Data transformation and `forcats` cheatsheets available on [Rstudio cloud](https://rstudio.cloud/learn/cheat-sheets)
+
+- Package websites:
+
+    + dplyr: https://dplyr.tidyverse.org/index.html
+    
+    + forcats: https://forcats.tidyverse.org/
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
