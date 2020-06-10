@@ -164,9 +164,9 @@ Notes:
 
 Your solution should look like this:
 
-```{r}
+```{r, out.width='100%'}
 
-read_rds('solutions/02_solution.rds')
+knitr::include_graphics('solutions/02_solution.png')
 
 ```
 
