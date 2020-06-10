@@ -106,7 +106,7 @@ Before starting these exercises, you should have a good understanding of
 
 # Exercise 1
 
-Group the `nhanes` data by exam and sex, then apply the `summary()` function to compute the mean systolic blood pressure and standard error for the mean systolic blood pressure at each exam year, for men and women, separately. 
+Group the `nhanes` data by exam and sex, then apply the `summarize()` function to compute the mean systolic blood pressure and standard error for the mean systolic blood pressure at each exam year, for men and women, separately. 
 
 Notes: 
 
@@ -114,7 +114,7 @@ Notes:
 
 - the mean systolic blood pressure should be named `sbp_mn`
 
-- the mean systolic blood pressure should be named `sbp_se`
+- the standard error of systolic blood pressure should be named `sbp_se`
 
 ```{r}
 
@@ -197,13 +197,26 @@ read_rds('solutions/03_solution.rds')
 
 # Exercise 4
 
-Apply functions from the `gt` package to reproduce the table below.
+Learn something new: Later on in the course, we will learn about reshaping data. One of the most useful functions for reshaping is called `pivot_wider`. Here is how it transforms the long data we created in exercise 3:
+
+```{r}
+
+# create one column for each exam year
+# values in each column are the percent with hypertension
+read_rds('solutions/03_solution.rds') %>% 
+  pivot_wider(names_from = exam, values_from = htn)
+
+```
+
+Use these wider data in combination with the `gt` package to reproduce the table below.
 
 Notes: 
 
-- `gt` handles grouped datasets by creating a table subsection for each group.
+- `gt` handles grouped datasets by creating a table subsection for each group (i.e., same as setting `groupname_col`).
 
-- `fmt_percent` and `fmt_missing` are used to control formatting
+- `fmt_percent` and `fmt_missing` are used to control formatting.
+
+- `tab_spanner()` creates table headers spanning columns. 
 
 - `summary_rows` is used to create the Overall summary for each sex group.
 
@@ -223,8 +236,6 @@ exam_years <- c(
   "2017"
 )
 
-# Your code goes here
-
 ```
 
 
@@ -243,11 +254,24 @@ Using the dataset you created in exercise 3, compare the prevalence of hypertens
 
 Notes: 
 
-I recommend using `group_by`, then `filter`, then `summarize`, then `mutate`. Last, arrange the data by `sex` and (in descending order) the absolute increase in the prevalence of hypertension.
+- Absolute difference: $$\text{prevalence from 2017} - \text{prevalence from 2013}$$
+
+- Relative difference: $$\frac{\text{prevalence from 2017}}{\text{prevalence from 2013}} - 1$$
 
 ```{r}
 
 # Your code goes here
+
+# Hint: my solution looks like this:
+# ... indicates code you can fill in.
+# data_p3 %>% 
+#   filter(exam %in% c('2013', '2017')) %>% 
+#   group_by(...) %>% 
+#   summarize(
+#     diff_abs = ...,
+#     diff_rel = (...) - 1
+#   ) %>% 
+#   arrange(...) 
 
 ```
 
@@ -264,13 +288,13 @@ read_rds('solutions/05_solution.rds')
 
 Tabulate the data you created in exercise 5, using some of the stylistic features that `gt` offers. 
 
-Notes:
+Notes: 
 
-- the function used to create table headers spanning columns is `tab_spanner()`
+- the function used to color cells is `data_color()`. 
 
-- the function used to adjust printed column names if `cols_label()`
+- Learn more about it [here](https://gt.rstudio.com/reference/data_color.html) 
 
-- the function used to color cells is `data_color()`
+- I always skip to the examples when I am looking at function help pages
 
 ```{r}
 
